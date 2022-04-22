@@ -1,5 +1,5 @@
 ﻿# gRPC_url-cutter
-## gRPC 
+## gRPC functions
 ```golang
 rpc Create(CreateURLRequest) returns (CreateURLResponse){}
 ```
