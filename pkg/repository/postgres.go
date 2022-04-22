@@ -7,7 +7,6 @@ import (
 	"gRPC_cutter/pkg/utils"
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"sync"
 )
 
 type database struct {
@@ -18,7 +17,7 @@ func NewDatabaseRep(conn *pgxpool.Pool) (*database, error) {
 	return &database{conn: conn}, nil
 }
 
-func (r *database) AddModel(ctx context.Context, wg *sync.WaitGroup, url string) (*model.Model, error) {
+func (r *database) AddModel(ctx context.Context, url string) (*model.Model, error) {
 	q := `
 	INSERT INTO url
 	(longurl, shorturl)
@@ -27,7 +26,10 @@ func (r *database) AddModel(ctx context.Context, wg *sync.WaitGroup, url string)
 	returning id
 `
 
-	m := model.NewModel(0, url, utils.Encode())
+	m, err := model.NewModel(0, url, utils.Encode())
+	if err != nil {
+		return nil, err
+	}
 
 	if err := r.conn.QueryRow(ctx, q, m.Longurl, m.Shorturl).Scan(&m.ID); err != nil {
 		pgErr, ok := err.(*pgconn.PgError)
@@ -47,7 +49,7 @@ func (r *database) AddModel(ctx context.Context, wg *sync.WaitGroup, url string)
 	}
 	return m, nil
 }
-func (r *database) GetModel(ctx context.Context, wg *sync.WaitGroup, shortURL string) (string, error) {
+func (r *database) GetModel(ctx context.Context, shortURL string) (string, error) {
 
 	var res string
 

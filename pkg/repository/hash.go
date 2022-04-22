@@ -24,8 +24,7 @@ func NewHash() (*hash, error) {
 	return repo, nil
 }
 
-func (h *hash) AddModel(ctx context.Context, wg *sync.WaitGroup, url string) (*model.Model, error) {
-	defer wg.Done()
+func (h *hash) AddModel(ctx context.Context, url string) (*model.Model, error) {
 	h.RLock()
 	if j, ok := h.hashmap[url]; ok {
 		h.RUnlock()
@@ -33,7 +32,10 @@ func (h *hash) AddModel(ctx context.Context, wg *sync.WaitGroup, url string) (*m
 	}
 	h.RUnlock()
 
-	m := model.NewModel(int(h.inc), url, utils.Encode())
+	m, err := model.NewModel(int(h.inc), url, utils.Encode())
+	if err != nil {
+		return nil, err
+	}
 
 	atomic.AddInt64(&h.inc, 1)
 
@@ -43,10 +45,9 @@ func (h *hash) AddModel(ctx context.Context, wg *sync.WaitGroup, url string) (*m
 
 	return m, nil
 }
-func (h *hash) GetModel(ctx context.Context, wg *sync.WaitGroup, shortURL string) (string, error) {
+func (h *hash) GetModel(ctx context.Context, shortURL string) (string, error) {
 	h.RLock()
 	defer h.RUnlock()
-	defer wg.Done()
 	if j, ok := h.hashmap[shortURL]; ok {
 		return j.Longurl, nil
 	} else {

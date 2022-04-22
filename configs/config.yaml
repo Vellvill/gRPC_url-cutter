@@ -1,6 +1,6 @@
-listen:
+server:
   port: ":8080"
 db:
-  dsn: "postgresql://postgres:12345@localhost:5432/L0"
-  migrations_path: "./internal/postgres/migrates"
+  dsn: "postgresql://postgres:12345@localhost:5432/url"
+  migrations_path: "./pkg/postgres/migrations"
 
