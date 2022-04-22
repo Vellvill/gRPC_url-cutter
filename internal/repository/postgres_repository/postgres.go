@@ -17,6 +17,8 @@ func NewDatabaseRep(conn *pgxpool.Pool) (*database, error) {
 	return &database{conn: conn}, nil
 }
 
+//AddModel создаёт новую запись в таблице. Если код ошибки 23505 (создание записи с имеющимся longurl),
+//то функция вовзраает модель с уже имеющимся ShortURL.
 func (r *database) AddModel(ctx context.Context, url string) (*model.Model, error) {
 	q := `
 	INSERT INTO url
