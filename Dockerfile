@@ -14,6 +14,4 @@ RUN go build -o cutter ./cmd/app/main.go
 
 ENTRYPOINT ["/app/cutter"]
 
-CMD["-cache"]
-
 EXPOSE 8080

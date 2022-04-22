@@ -5,7 +5,8 @@ import (
 	"testing"
 )
 
-func Test_validtaion(t *testing.T) {
+// Test_validation тестирование валидации модели по полю Longurl на соответствие URL
+func Test_validation(t *testing.T) {
 	tests := []struct {
 		name    string
 		model   *Model

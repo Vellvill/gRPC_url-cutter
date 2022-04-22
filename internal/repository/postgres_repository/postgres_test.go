@@ -44,12 +44,7 @@ func TestRepositoryPostgres_GetModel(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	code, err := short.Check()
-	if err != nil {
-		t.Log(err)
-	}
-
 	assert.NoError(t, err)
-	assert.NotNil(t, long, code)
-	t.Logf("http status of %v is %d\n", long, code)
+	assert.NotNil(t, long, short)
+	t.Logf("long url %v, short url %v", long, short.Shorturl)
 }

@@ -43,10 +43,8 @@ func (h *hash) AddModel(ctx context.Context, url string) (*model.Model, error) {
 		h.RUnlock()
 		h.Lock()
 		h.hashmapLong[m.Longurl] = m
-		h.Unlock()
 	}
 
-	h.Lock()
 	h.hashmapShort[m.Shorturl] = m
 	h.Unlock()
 
