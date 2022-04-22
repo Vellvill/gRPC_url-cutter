@@ -45,6 +45,7 @@ func (h *hash) AddModel(ctx context.Context, url string) (*model.Model, error) {
 
 	return m, nil
 }
+
 func (h *hash) GetModel(ctx context.Context, shortURL string) (string, error) {
 	h.RLock()
 	defer h.RUnlock()

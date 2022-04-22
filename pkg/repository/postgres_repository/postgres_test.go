@@ -12,9 +12,7 @@ func TestRepositoryPostgres_AddModel(t *testing.T) {
 	s, down := repository.TestStore(t, DSN, MigrationsPath)
 	defer down("url")
 
-	testModel := model.TestModel(t)
-
-	err := testModel.BeforeCreate()
+	testModel, err := model.TestModel(t)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -32,13 +30,10 @@ func TestRepositoryPostgres_GetModel(t *testing.T) {
 	s, down := repository.TestStore(t, DSN, MigrationsPath)
 	defer down("url")
 
-	testModel := model.TestModel(t)
-
-	err := testModel.BeforeCreate()
+	testModel, err := model.TestModel(t)
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	short, err := s.AddModel(context.TODO(), testModel.Longurl)
 	if err != nil {
 		t.Fatal(err)
