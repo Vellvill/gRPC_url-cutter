@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func NewClient(ctx context.Context, config *config.Config) (pool *pgxpool.Pool, err error) {
+func NewClient(ctx context.Context, config *config.Config, migrations *bool) (pool *pgxpool.Pool, err error) {
 	dsn := config.Db.Dsn
 	err = utils.DoWithTries(func() error {
 		ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
@@ -26,11 +26,11 @@ func NewClient(ctx context.Context, config *config.Config) (pool *pgxpool.Pool, 
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	if err = migrateDatabase(pool, config.Db.MigrationsPath, ctx); err != nil {
-		return pool, fmt.Errorf("Unable to migrate, error: %s\n", err)
+	if *migrations {
+		if err = migrateDatabase(pool, config.Db.MigrationsPath, ctx); err != nil {
+			return pool, fmt.Errorf("Unable to migrate, error: %s\n", err)
+		}
 	}
-
 	log.Println("Connected to postgres database")
 	return pool, nil
 }

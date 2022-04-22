@@ -42,7 +42,7 @@ func newServer(config *config.Config, repo usecases.Repository) *GRPCServer {
 	}
 }
 
-func ApplicationStart(cache *bool) error {
+func ApplicationStart(cache, migrations *bool) error {
 
 	cfg, err := config.GetConfig()
 	if err != nil {
@@ -67,7 +67,7 @@ func ApplicationStart(cache *bool) error {
 		log.Println("Cache is ready to accept new links")
 	} else {
 
-		client, err := postgres.NewClient(context.Background(), cfg)
+		client, err := postgres.NewClient(context.Background(), cfg, migrations)
 		if err != nil {
 			return err
 		}
