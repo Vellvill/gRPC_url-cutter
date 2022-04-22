@@ -1,6 +1,6 @@
 package service
 
-import "gRPC_cutter/pkg/usecases"
+import "gRPC_cutter/internal/usecases"
 
 type Implementation struct {
 	repo usecases.Repository

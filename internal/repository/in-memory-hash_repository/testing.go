@@ -1,7 +1,7 @@
 package in_memory_hash_repository
 
 import (
-	"gRPC_cutter/pkg/usecases"
+	"gRPC_cutter/internal/usecases"
 	"testing"
 )
 

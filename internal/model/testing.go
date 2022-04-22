@@ -1,9 +1,7 @@
 package model
 
-import "testing"
-
 //TestModel тестовая модель
-func TestModel(t *testing.T) (*Model, error) {
+func TestModel() (*Model, error) {
 	test := &Model{
 		ID:       0,
 		Longurl:  "https://tests.com/",

@@ -3,8 +3,8 @@ package postgres
 import (
 	"context"
 	"fmt"
-	"gRPC_cutter/pkg/config"
-	"gRPC_cutter/pkg/utils"
+	"gRPC_cutter/internal/config"
+	"gRPC_cutter/internal/utils"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"log"
 	"time"

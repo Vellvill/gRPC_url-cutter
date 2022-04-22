@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"gRPC_cutter/pkg/server"
+	"gRPC_cutter/internal/server"
 	"log"
 )
 

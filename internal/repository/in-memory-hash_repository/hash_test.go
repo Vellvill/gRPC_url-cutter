@@ -1,18 +1,17 @@
-package postgres_repository_test
+package in_memory_hash_repository_test
 
 import (
 	"context"
-	"gRPC_cutter/pkg/model"
-	"gRPC_cutter/pkg/repository/postgres_repository"
+	"gRPC_cutter/internal/model"
+	in_memory_hash_repository "gRPC_cutter/internal/repository/in-memory-hash_repository"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func TestRepositoryPostgres_AddModel(t *testing.T) {
-	s, down := postgres_repository.TestStore(t, DSN, MigrationsPath)
-	defer down("url")
+func TestRepositoryInMemoryHash_AddModel(t *testing.T) {
+	s := in_memory_hash_repository.TestHash(t)
 
-	testModel, err := model.TestModel(t)
+	testModel, err := model.TestModel()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -26,11 +25,10 @@ func TestRepositoryPostgres_AddModel(t *testing.T) {
 	assert.NotNil(t, testModel, short)
 }
 
-func TestRepositoryPostgres_GetModel(t *testing.T) {
-	s, down := postgres_repository.TestStore(t, DSN, MigrationsPath)
-	defer down("url")
+func TestRepositoryInMemoryHash_GetModel(t *testing.T) {
+	s := in_memory_hash_repository.TestHash(t)
 
-	testModel, err := model.TestModel(t)
+	testModel, err := model.TestModel()
 	if err != nil {
 		t.Fatal(err)
 	}

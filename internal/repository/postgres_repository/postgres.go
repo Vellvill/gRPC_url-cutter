@@ -3,8 +3,8 @@ package postgres_repository
 import (
 	"context"
 	"fmt"
-	"gRPC_cutter/pkg/model"
-	"gRPC_cutter/pkg/utils"
+	"gRPC_cutter/internal/model"
+	"gRPC_cutter/internal/utils"
 	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
@@ -23,7 +23,7 @@ func (r *database) AddModel(ctx context.Context, url string) (*model.Model, erro
 	(longurl, shorturl)
 	values
 	($1, $2)
-	returning id
+	returning shorturl
 `
 
 	m, err := model.NewModel(0, url, utils.Encode())
@@ -31,9 +31,22 @@ func (r *database) AddModel(ctx context.Context, url string) (*model.Model, erro
 		return nil, err
 	}
 
-	if err := r.conn.QueryRow(ctx, q, m.Longurl, m.Shorturl).Scan(&m.ID); err != nil {
+	if err = r.conn.QueryRow(ctx, q, m.Longurl, m.Shorturl).Scan(&m.Shorturl); err != nil {
 		pgErr, ok := err.(*pgconn.PgError)
 		if ok {
+			if pgErr.Code == "23505" {
+				q = `
+				SELECT
+				shorturl
+				FROM url
+				WHERE longurl = $1
+`
+				err = r.conn.QueryRow(ctx, q, m.Longurl).Scan(&m.Shorturl)
+				if err != nil {
+					return nil, err
+				}
+				return m, nil
+			}
 			newErr := fmt.Errorf(fmt.Sprintf("SQL Error: " +
 				pgErr.Message +
 				", Detail: " +

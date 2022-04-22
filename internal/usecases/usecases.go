@@ -2,7 +2,7 @@ package usecases
 
 import (
 	"context"
-	"gRPC_cutter/pkg/model"
+	"gRPC_cutter/internal/model"
 )
 
 type Repository interface {

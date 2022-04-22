@@ -3,9 +3,9 @@ package postgres_repository
 import (
 	"context"
 	"fmt"
-	"gRPC_cutter/pkg/config"
-	"gRPC_cutter/pkg/postgres"
-	"gRPC_cutter/pkg/usecases"
+	"gRPC_cutter/internal/config"
+	"gRPC_cutter/internal/postgres"
+	"gRPC_cutter/internal/usecases"
 	"strings"
 	"testing"
 )

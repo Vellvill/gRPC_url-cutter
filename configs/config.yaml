@@ -2,5 +2,5 @@ server:
   port: ":8080"
 db:
   dsn: "postgresql://postgres:postgres@db:5432/postgres"
-  migrations_path: "./pkg/postgres/migrations"
+  migrations_path: "./internal/postgres/migrations"
 
