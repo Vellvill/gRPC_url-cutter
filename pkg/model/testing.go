@@ -2,10 +2,12 @@ package model
 
 import "testing"
 
-func TestModel(t *testing.T) *Model {
-	return &Model{
+//TestModel тестовая модель
+func TestModel(t *testing.T) (*Model, error) {
+	test := &Model{
 		ID:       0,
 		Longurl:  "https://tests.com/",
 		Shorturl: "",
 	}
+	return test, test.validation()
 }

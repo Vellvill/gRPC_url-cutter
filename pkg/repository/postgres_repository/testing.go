@@ -1,4 +1,4 @@
-package repository
+package postgres_repository
 
 import (
 	"context"
@@ -43,15 +43,4 @@ func TestStore(t *testing.T, databaseURL, migrationsPath string) (usecases.Repos
 			}
 		}
 	}
-}
-
-func TestHash(t *testing.T) usecases.Repository {
-	t.Helper()
-
-	hash, err := NewHash()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	return hash
 }

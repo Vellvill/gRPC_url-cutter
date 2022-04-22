@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  server:
+    container_name: new_url_cutter
+    build:
+      dockerfile: Dockerfile
+      context: .
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - ./database-data:/var/lib/postgresql/datas
+
+volumes:
+  database-data:

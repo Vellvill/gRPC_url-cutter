@@ -6,29 +6,30 @@ import (
 	"net/http"
 )
 
+//Model структура хранимой модели
 type Model struct {
 	ID       int
 	Longurl  string
 	Shorturl string
 }
 
+//NewModel создание новой модели
 func NewModel(ID int, longurl, shorturl string) (*Model, error) {
 	m := &Model{
 		ID:       ID,
 		Longurl:  longurl,
 		Shorturl: shorturl,
 	}
-	err := m.BeforeCreate()
-	if err != nil {
-		return nil, err
-	}
-	return m, nil
+	return m, m.validation()
 }
 
-func (m *Model) BeforeCreate() error {
+//validation алидация поля URL
+func (m *Model) validation() error {
 	return validation.ValidateStruct(m,
 		validation.Field(&m.Longurl, validation.Required, is.URL))
 }
+
+//Check проверка статуса URL
 func (m *Model) Check() (int, error) {
 	resp, err := http.Get(m.Longurl)
 	if err != nil {

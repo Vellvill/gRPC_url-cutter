@@ -1,4 +1,4 @@
-package repository_test
+package postgres_repository_test
 
 import (
 	"os"

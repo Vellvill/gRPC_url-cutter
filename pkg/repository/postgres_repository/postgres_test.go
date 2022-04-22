@@ -1,15 +1,15 @@
-package repository_test
+package postgres_repository_test
 
 import (
 	"context"
 	"gRPC_cutter/pkg/model"
-	"gRPC_cutter/pkg/repository"
+	"gRPC_cutter/pkg/repository/postgres_repository"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestRepositoryPostgres_AddModel(t *testing.T) {
-	s, down := repository.TestStore(t, DSN, MigrationsPath)
+	s, down := postgres_repository.TestStore(t, DSN, MigrationsPath)
 	defer down("url")
 
 	testModel, err := model.TestModel(t)
@@ -27,7 +27,7 @@ func TestRepositoryPostgres_AddModel(t *testing.T) {
 }
 
 func TestRepositoryPostgres_GetModel(t *testing.T) {
-	s, down := repository.TestStore(t, DSN, MigrationsPath)
+	s, down := postgres_repository.TestStore(t, DSN, MigrationsPath)
 	defer down("url")
 
 	testModel, err := model.TestModel(t)

@@ -6,7 +6,8 @@ import (
 	"gRPC_cutter/pkg/config"
 	cut "gRPC_cutter/pkg/cutter"
 	"gRPC_cutter/pkg/postgres"
-	"gRPC_cutter/pkg/repository"
+	"gRPC_cutter/pkg/repository/in-memory-hash_repository"
+	"gRPC_cutter/pkg/repository/postgres_repository"
 	"gRPC_cutter/pkg/usecases"
 	"google.golang.org/grpc"
 	"log"
@@ -60,7 +61,7 @@ func ApplicationStart(cache, migrations *bool) error {
 
 	if *cache {
 
-		repo, err = repository.NewHash()
+		repo, err = in_memory_hash_repository.NewHash()
 		if err != nil {
 			return err
 		}
@@ -71,7 +72,7 @@ func ApplicationStart(cache, migrations *bool) error {
 		if err != nil {
 			return err
 		}
-		repo, err = repository.NewDatabaseRep(client)
+		repo, err = postgres_repository.NewDatabaseRep(client)
 		if err != nil {
 			return err
 		}

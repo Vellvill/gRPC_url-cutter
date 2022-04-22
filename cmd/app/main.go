@@ -18,6 +18,7 @@ func init() {
 
 func main() {
 	flag.Parse()
+
 	err := server.ApplicationStart(cache, migrations)
 	if err != nil {
 		log.Fatal(err)
