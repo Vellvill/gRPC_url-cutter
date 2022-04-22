@@ -21,6 +21,7 @@ type GRPCServer struct {
 	cut.UnimplementedURLShortenerServer
 }
 
+//Create сгенерированный proto файлом метод. Принимает сообщение в виде LongURL и возвращает ShortURL из репозитория.
 func (s *GRPCServer) Create(ctx context.Context, req *cut.CreateURLRequest) (*cut.CreateURLResponse, error) {
 	m, err := s.repo.AddModel(ctx, req.URL)
 	if err != nil {
@@ -28,6 +29,8 @@ func (s *GRPCServer) Create(ctx context.Context, req *cut.CreateURLRequest) (*cu
 	}
 	return &cut.CreateURLResponse{ShortURL: m.Shorturl}, nil
 }
+
+//Get сгенерированный proto файлом метод. Принимает сообщение в виде ShortURL и возвращает подходящий LongURL из репозитория.
 func (s *GRPCServer) Get(ctx context.Context, req *cut.GetURLRequest) (*cut.GetURLResponse, error) {
 	res, err := s.repo.GetModel(ctx, req.ShortURL)
 	if err != nil {
@@ -36,6 +39,7 @@ func (s *GRPCServer) Get(ctx context.Context, req *cut.GetURLRequest) (*cut.GetU
 	return &cut.GetURLResponse{URL: res}, nil
 }
 
+// newServer приватная функция инициализации нового сервера
 func newServer(config *config.Config, repo usecases.Repository) *GRPCServer {
 	return &GRPCServer{
 		config: config,
@@ -43,6 +47,7 @@ func newServer(config *config.Config, repo usecases.Repository) *GRPCServer {
 	}
 }
 
+//ApplicationStart функцию, задающая используемый репозиторий и регистрирующая gRPC сервис
 func ApplicationStart(cache, migrations *bool) error {
 
 	cfg, err := config.GetConfig()

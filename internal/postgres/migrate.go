@@ -8,6 +8,7 @@ import (
 )
 
 //migrateDatabase создание новой таблицы из файлов миграции, в случае отсутствии таблицы.
+//Для запуска миграций использовать флаг -migrations.
 func migrateDatabase(pool *pgxpool.Pool, path string, ctx context.Context) error {
 
 	conn, err := pool.Acquire(ctx)

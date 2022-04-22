@@ -10,6 +10,9 @@ import (
 	"testing"
 )
 
+//TestStore инциализирует подключение к тестовой базе данных. Это не best practices, однако в рамках задачи
+//тест даёт понять, что подключение успешно установлено. Функция возвращает функцию, делающая удаление таблиц
+//и зависимостей после завершения тестов.
 func TestStore(t *testing.T, databaseURL, migrationsPath string) (usecases.Repository, func(...string)) {
 	t.Helper()
 

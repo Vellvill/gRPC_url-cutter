@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+//TestHash инциализация тестового in-memory хранилища
 func TestHash(t *testing.T) usecases.Repository {
 	t.Helper()
 

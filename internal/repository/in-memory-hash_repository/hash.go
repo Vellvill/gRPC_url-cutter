@@ -9,6 +9,8 @@ import (
 	"sync/atomic"
 )
 
+//hash структура in-memory репозитория, он использует две мапы, в которых хранятся таблицы.
+//Это сделано для исключения одинаковых ShortURL для LongURL.
 type hash struct {
 	*sync.RWMutex
 	inc          int64
@@ -16,6 +18,7 @@ type hash struct {
 	hashmapLong  map[string]*model.Model
 }
 
+//NewHash алоцирует память для map
 func NewHash() (*hash, error) {
 	repo := &hash{
 		RWMutex:      new(sync.RWMutex),
@@ -26,6 +29,7 @@ func NewHash() (*hash, error) {
 	return repo, nil
 }
 
+//AddModel добавляет LongURL при remote вызове метода Create в мапу Long и Short
 func (h *hash) AddModel(ctx context.Context, url string) (*model.Model, error) {
 
 	m, err := model.NewModel(int(h.inc), url, utils.Encode())
@@ -51,6 +55,7 @@ func (h *hash) AddModel(ctx context.Context, url string) (*model.Model, error) {
 	return m, nil
 }
 
+//GetModel проверяет наличие в мапе ShortURL запрашиваемого LongURL
 func (h *hash) GetModel(ctx context.Context, shortURL string) (string, error) {
 	h.RLock()
 	defer h.RUnlock()
