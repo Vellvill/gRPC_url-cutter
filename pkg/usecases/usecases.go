@@ -2,10 +2,10 @@ package usecases
 
 import (
 	"context"
-	"gRPC_cutter/pkg/model"
+	"sync"
 )
 
 type Repository interface {
-	AddModel(ctx context.Context, model *model.Model) error
-	GetModel(ctx context.Context, shortURL string) (string, error)
+	AddModel(ctx context.Context, wg *sync.WaitGroup, url string) error
+	GetModel(ctx context.Context, wg *sync.WaitGroup, shortURL string) (string, error)
 }

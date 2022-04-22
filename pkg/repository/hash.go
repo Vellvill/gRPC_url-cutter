@@ -2,16 +2,54 @@ package repository
 
 import (
 	"context"
+	"fmt"
 	"gRPC_cutter/pkg/model"
+	"gRPC_cutter/pkg/utils"
+	"sync"
+	"sync/atomic"
 )
 
 type hash struct {
+	*sync.RWMutex
+	inc     int64
 	hashmap map[string]*model.Model
 }
 
-func (h *hash) AddModel(ctx context.Context, model *model.Model) error {
+func NewHash() (*hash, error) {
+	repo := &hash{
+		RWMutex: new(sync.RWMutex),
+		inc:     1,
+		hashmap: make(map[string]*model.Model),
+	}
+	return repo, nil
+}
+
+func (h *hash) AddModel(ctx context.Context, wg *sync.WaitGroup, url string) error {
+	defer wg.Done()
+	h.RLock()
+	if _, ok := h.hashmap[url]; ok {
+		h.RUnlock()
+		return nil
+	}
+	h.RUnlock()
+
+	m := model.NewModel(int(h.inc), url, utils.Encode())
+
+	atomic.AddInt64(&h.inc, 1)
+
+	h.Lock()
+	h.hashmap[m.Shorturl] = m
+	h.Unlock()
+
 	return nil
 }
-func (h *hash) GetModel(ctx context.Context, shortURL string) (string, error) {
-	return "", nil
+func (h *hash) GetModel(ctx context.Context, wg *sync.WaitGroup, shortURL string) (string, error) {
+	h.RLock()
+	defer h.RUnlock()
+	defer wg.Done()
+	if j, ok := h.hashmap[shortURL]; ok {
+		return j.Longurl, nil
+	} else {
+		return "", fmt.Errorf("Didnt find %s shorturl in hash\n", shortURL)
+	}
 }

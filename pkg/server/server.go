@@ -2,30 +2,71 @@ package main
 
 import (
 	"context"
-	grp "gRPC_cutter/pkg/cutter"
+	"flag"
+	"gRPC_cutter/pkg/config"
+	cut "gRPC_cutter/pkg/cutter"
+	"gRPC_cutter/pkg/postgres"
+	"gRPC_cutter/pkg/repository"
 	"gRPC_cutter/pkg/usecases"
 	"log"
-	"net"
 )
 
 // GRPCServer ...
 type GRPCServer struct {
-	grp.UnimplementedURLShortenerServer
-	repo usecases.Repository
+	config *config.Config
+	repo   usecases.Repository
+	_      cut.UnimplementedURLShortenerServer
 }
 
-func (s *GRPCServer) AddURL(ctx context.Context, in *grp.AddURLRequest) (*grp.AddURLResponse, error) {
+func (s *GRPCServer) Create(context.Context, *cut.CreateURLRequest) (*cut.CreateURLResponse, error) {
 	return nil, nil
 }
-func (s *GRPCServer) GetURL(ctx context.Context, in *grp.GetURLRequest) (*grp.GetURLResponse, error) {
+func (s *GRPCServer) Get(context.Context, *cut.GetURLRequest) (*cut.GetURLResponse, error) {
 	return nil, nil
 }
 
-func main() {
+var cache *bool
 
-	listner, err := net.Listen("tcp", ":8080")
+func init() {
+	cache = flag.Bool("cache", false, "use cache instead of database")
+}
+
+func newServer(config *config.Config, repo usecases.Repository) *GRPCServer {
+	return &GRPCServer{
+		config: config,
+		repo:   repo,
+	}
+}
+
+func Application() {
+	flag.Parse()
+
+	cfg, err := config.GetConfig()
 	if err != nil {
-		log.Fatal("Error listening on port 8080")
+		log.Fatal(err)
+	}
+	var repo usecases.Repository
+
+	if *cache {
+
+		repo, err = repository.NewHash()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+	} else {
+
+		client, err := postgres.NewClient(context.Background(), cfg)
+		if err != nil {
+			log.Fatal(err)
+		}
+		repo, err = repository.NewDatabaseRep(client)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
+	newServer(cfg, repo)
+
+	return
 }
