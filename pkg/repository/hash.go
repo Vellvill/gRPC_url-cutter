@@ -24,12 +24,12 @@ func NewHash() (*hash, error) {
 	return repo, nil
 }
 
-func (h *hash) AddModel(ctx context.Context, wg *sync.WaitGroup, url string) error {
+func (h *hash) AddModel(ctx context.Context, wg *sync.WaitGroup, url string) (*model.Model, error) {
 	defer wg.Done()
 	h.RLock()
-	if _, ok := h.hashmap[url]; ok {
+	if j, ok := h.hashmap[url]; ok {
 		h.RUnlock()
-		return nil
+		return nil, fmt.Errorf("URL aldready exists, short: %s\n", j.Shorturl)
 	}
 	h.RUnlock()
 
@@ -41,7 +41,7 @@ func (h *hash) AddModel(ctx context.Context, wg *sync.WaitGroup, url string) err
 	h.hashmap[m.Shorturl] = m
 	h.Unlock()
 
-	return nil
+	return m, nil
 }
 func (h *hash) GetModel(ctx context.Context, wg *sync.WaitGroup, shortURL string) (string, error) {
 	h.RLock()

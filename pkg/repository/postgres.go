@@ -18,7 +18,7 @@ func NewDatabaseRep(conn *pgxpool.Pool) (*database, error) {
 	return &database{conn: conn}, nil
 }
 
-func (r *database) AddModel(ctx context.Context, wg *sync.WaitGroup, url string) error {
+func (r *database) AddModel(ctx context.Context, wg *sync.WaitGroup, url string) (*model.Model, error) {
 	q := `
 	INSERT INTO url
 	(longurl, shorturl)
@@ -40,12 +40,12 @@ func (r *database) AddModel(ctx context.Context, wg *sync.WaitGroup, url string)
 				pgErr.Where +
 				", SQLState: " +
 				pgErr.SQLState()))
-			return newErr
+			return nil, newErr
 		} else {
-			return err
+			return nil, err
 		}
 	}
-	return nil
+	return m, nil
 }
 func (r *database) GetModel(ctx context.Context, wg *sync.WaitGroup, shortURL string) (string, error) {
 
