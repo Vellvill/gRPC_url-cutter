@@ -4,11 +4,11 @@ services:
   server:
     container_name: new_url_cutter
     build:
-      dockerfile: Dockerfile
       context: .
     restart: on-failure
     ports:
       - "8080:8080"
+      - "5000:5000"
     depends_on:
       - db
 

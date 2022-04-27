@@ -14,4 +14,4 @@ RUN go build -o cutter ./cmd/app/main.go
 
 ENTRYPOINT ["/app/cutter"]
 
-EXPOSE 8080
+EXPOSE 8080 5000
