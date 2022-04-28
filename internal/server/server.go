@@ -9,12 +9,9 @@ import (
 	"gRPC_cutter/internal/repository/in-memory-hash_repository"
 	"gRPC_cutter/internal/repository/postgres_repository"
 	"gRPC_cutter/internal/usecases"
-	"github.com/gorilla/mux"
 	"google.golang.org/grpc"
 	"log"
 	"net"
-	"net/http"
-	"sync"
 )
 
 // GRPCServer ...
@@ -22,7 +19,6 @@ type GRPCServer struct {
 	config *config.Config
 	repo   usecases.Repository
 	cut.UnimplementedURLShortenerServer
-	router *mux.Router
 }
 
 //Create сгенерированный proto файлом метод. Принимает сообщение в виде LongURL и возвращает ShortURL из репозитория.
@@ -51,19 +47,16 @@ func newServer(config *config.Config, repo usecases.Repository) *GRPCServer {
 	}
 }
 
-var wg sync.WaitGroup
-
 //ApplicationStart функцию, задающая используемый репозиторий и регистрирующая gRPC сервис
-func ApplicationStart(cache, migrations *bool) {
-	wg.Add(2)
+func ApplicationStart(cache, migrations *bool) error {
 	cfg, err := config.GetConfig()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	listner, err := net.Listen("tcp", fmt.Sprintf("%s", cfg.Server.Port))
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	srv := grpc.NewServer()
@@ -74,18 +67,18 @@ func ApplicationStart(cache, migrations *bool) {
 
 		repo, err = in_memory_hash_repository.NewHash()
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		log.Println("Cache is ready to accept new links")
 	} else {
 
 		client, err := postgres.NewClient(context.Background(), cfg, migrations)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		repo, err = postgres_repository.NewDatabaseRep(client)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 	}
 
@@ -93,36 +86,7 @@ func ApplicationStart(cache, migrations *bool) {
 
 	cut.RegisterURLShortenerServer(srv, server)
 
-	r := mux.NewRouter()
-	r.HandleFunc("/{short}", func(rw http.ResponseWriter, r *http.Request) {
-		url := mux.Vars(r)
-		redirectURL, err := server.Get(context.Background(), &cut.GetURLRequest{ShortURL: url["short"]})
-		if err != nil {
-			rw.Write([]byte("Failed to get url"))
-			return
-		}
-		http.Redirect(rw, r, redirectURL.URL, 301)
-	})
+	log.Println("Starting server...")
 
-	server.router = r
-
-	go func() {
-		log.Println("Starting server...")
-		if err := srv.Serve(listner); err != nil {
-			log.Fatal(err)
-			return
-		}
-		wg.Done()
-	}()
-
-	go func() {
-		log.Println("Starting httpServer...")
-		if err := http.ListenAndServe(":5000", server.router); err != nil {
-			log.Fatal(err)
-			return
-		}
-		wg.Done()
-	}()
-
-	wg.Wait()
+	return srv.Serve(listner)
 }

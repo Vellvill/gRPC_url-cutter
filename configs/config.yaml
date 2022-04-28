@@ -1,6 +1,6 @@
 server:
   port: ":8080"
 db:
-  dsn: "postgresql://postgres:postgres@localhost:5432/db"
+  dsn: "postgresql://postgres:12345@localhost:5432/url"
   migrations_path: "./internal/postgres/migrations"
 

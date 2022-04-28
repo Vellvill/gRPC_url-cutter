@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"gRPC_cutter/internal/server"
+	"log"
 )
 
 var (
@@ -19,5 +20,8 @@ func init() {
 func main() {
 	flag.Parse()
 
-	server.ApplicationStart(cache, migrations)
+	err := server.ApplicationStart(cache, migrations)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
