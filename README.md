@@ -50,7 +50,13 @@ type URLShortenerClient interface {
 }
 ```
 You can send requests directly to server by using flags ```-add``` and ```-get```.
+
+If you changed port on server, (by default connection it starts at ```:8080```) you need to change target at 30 row.
+```golang 
+client, err := grpc.Dial(":8080", grpc.WithTransportCredentials(insecure.NewCredentials()))
+```
+
 ## How to use
-1. start your server with docker and make sure that you used flags for repository that you want to use.
-2. ```run ./internal/client [-FLAG] ["VALUE"]```
-3. get an answer.
+1. start your server with docker and make sure that you used flags for repository that you want to use. 
+4. ```run ./internal/client [-FLAG] ["VALUE"]```
+5. get an answer.
