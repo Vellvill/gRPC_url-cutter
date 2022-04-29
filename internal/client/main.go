@@ -22,27 +22,31 @@ func init() {
 
 //main реализация клиента. Для общения с сервером используйте флаги -add и -get с укзанием LongURL и ShortURL
 func main() {
+
 	flag.Parse()
 
 	if add == "" && get == "" {
 		log.Fatal("Chose method with flag '-get' or 'add'")
 	}
+
 	client, err := grpc.Dial(":8080", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	c := cut.NewURLShortenerClient(client)
+
 	if add != "" {
-		res, err := c.Create(context.Background(), &cut.CreateURLRequest{URL: add})
+		result, err := c.Create(context.Background(), &cut.CreateURLRequest{URL: add})
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(res.ShortURL)
+		fmt.Println(result.ShortURL)
 	} else {
-		res, err := c.Get(context.Background(), &cut.GetURLRequest{ShortURL: get})
+		result, err := c.Get(context.Background(), &cut.GetURLRequest{ShortURL: get})
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println(res.URL)
+		fmt.Println(result.URL)
 	}
 }

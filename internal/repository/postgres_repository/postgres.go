@@ -23,10 +23,12 @@ func (r *database) AddModel(ctx context.Context, url string) (*model.Model, erro
 	q := `
 	INSERT INTO url
 	(longurl, shorturl)
-	values
+	VALUES
 	($1, $2)
-	returning shorturl
-`
+	ON CONFLICT (longurl) DO UPDATE SET
+	longurl = $1
+	RETURNING shorturl
+		`
 
 	m, err := model.NewModel(0, url, utils.Encode())
 	if err != nil {
@@ -36,19 +38,6 @@ func (r *database) AddModel(ctx context.Context, url string) (*model.Model, erro
 	if err = r.conn.QueryRow(ctx, q, m.Longurl, m.Shorturl).Scan(&m.Shorturl); err != nil {
 		pgErr, ok := err.(*pgconn.PgError)
 		if ok {
-			if pgErr.Code == "23505" {
-				q = `
-				SELECT
-				shorturl
-				FROM url
-				WHERE longurl = $1
-`
-				err = r.conn.QueryRow(ctx, q, m.Longurl).Scan(&m.Shorturl)
-				if err != nil {
-					return nil, err
-				}
-				return m, nil
-			}
 			newErr := fmt.Errorf(fmt.Sprintf("SQL Error: " +
 				pgErr.Message +
 				", Detail: " +
