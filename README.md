@@ -37,9 +37,8 @@ If you are running the service on the local machine for the first time and want 
 ```
 ## How to run
 1. Clone repository
-2. ```docker-compose run -p 8080:8080 server [-FLAGS]```
-2.1. If you want to use your own database just edit dsn in ```config.yaml```
-3 Try to add new links in database. For gRPC client you can use evans https://github.com/ktr0731/evans or you can use gRPC_url-cutter client.
+2. ```docker-compose run -p 8080:8080 server [-FLAGS]```. If you want to change any environments of database just edit dsn in ```config.yaml``` and edit environments at ```docker-compose.yaml.```
+3. Try to add new links in database. For gRPC client you can use evans https://github.com/ktr0731/evans or you can use gRPC_url-cutter client.
 
 # gRPC_url-cutter client
 ## Implementation
