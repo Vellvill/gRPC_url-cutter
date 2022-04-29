@@ -20,6 +20,7 @@ func init() {
 	flag.StringVar(&get, "get", "", "use for getting")
 }
 
+//main реализация клиента. Для общения с сервером используйте флаги -add и -get с укзанием LongURL и ShortURL
 func main() {
 	flag.Parse()
 

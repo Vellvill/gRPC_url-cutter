@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-//NewClient возвращает пул соединений к базе данных, используемый для работы запросов.
+//NewClient возвращает пул соединений к базе данных, используемый для работы с базой.
 func NewClient(ctx context.Context, config *config.Config, migrations *bool) (pool *pgxpool.Pool, err error) {
 	dsn := config.Db.Dsn
 	err = utils.DoWithTries(func() error {
