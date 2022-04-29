@@ -8,7 +8,6 @@ services:
     restart: on-failure
     ports:
       - "8080:8080"
-      - "5000:5000"
     depends_on:
       - db
 
