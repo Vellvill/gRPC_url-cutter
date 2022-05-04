@@ -6,7 +6,7 @@ import (
 	"gRPC_cutter/internal/config"
 	cut "gRPC_cutter/internal/cutter"
 	"gRPC_cutter/internal/postgres"
-	"gRPC_cutter/internal/repository/in-memory-hash_repository"
+	in_memory_hash_repository "gRPC_cutter/internal/repository/in-memory-hash_repository"
 	"gRPC_cutter/internal/repository/postgres_repository"
 	"gRPC_cutter/internal/usecases"
 	"google.golang.org/grpc"
@@ -69,17 +69,22 @@ func ApplicationStart(cache, migrations *bool) error {
 		if err != nil {
 			return err
 		}
-		log.Println("Cache is ready to accept new links")
+
+		log.Printf("Cache repository starting\n")
+
 	} else {
 
 		client, err := postgres.NewClient(context.Background(), cfg, migrations)
 		if err != nil {
 			return err
 		}
+
 		repo, err = postgres_repository.NewDatabaseRep(client)
 		if err != nil {
 			return err
 		}
+
+		log.Printf("Postgres repository starting\n")
 	}
 
 	server := newServer(cfg, repo)
