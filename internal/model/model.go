@@ -25,5 +25,6 @@ func NewModel(ID int, longurl, shorturl string) (*Model, error) {
 //validation валидация поля LongURL
 func (m *Model) validation() error {
 	return validation.ValidateStruct(m,
-		validation.Field(&m.Longurl, validation.Required, is.URL))
+		validation.Field(&m.Longurl, validation.Required, is.URL),
+		validation.Field(&m.Shorturl, validation.Required, validation.Length(10, 10)))
 }

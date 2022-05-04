@@ -17,7 +17,7 @@ func Test_validation(t *testing.T) {
 			&Model{
 				ID:       0,
 				Longurl:  "https://tests.com/",
-				Shorturl: "",
+				Shorturl: "1234567890",
 			},
 			true,
 		},
@@ -26,7 +26,7 @@ func Test_validation(t *testing.T) {
 			&Model{
 				ID:       0,
 				Longurl:  "i43g5hl",
-				Shorturl: "",
+				Shorturl: "1234567890",
 			},
 			false,
 		},
@@ -35,7 +35,25 @@ func Test_validation(t *testing.T) {
 			&Model{
 				ID:       0,
 				Longurl:  "i don't know what url is",
+				Shorturl: "1234567890",
+			},
+			false,
+		},
+		{
+			"within shorturl",
+			&Model{
+				ID:       0,
+				Longurl:  "https://tests.com/",
 				Shorturl: "",
+			},
+			false,
+		},
+		{
+			"too short shorturl",
+			&Model{
+				ID:       0,
+				Longurl:  "https://tests.com/",
+				Shorturl: "123",
 			},
 			false,
 		},
